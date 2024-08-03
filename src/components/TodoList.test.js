@@ -1,7 +1,8 @@
 // src/components/TodoList.test.js
-import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom'; // Use this import
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom'; // Import for jest-dom matchers
 import TodoList from './TodoList';
+
 
 test('renders todo list and allows adding and removing items', () => {
   render(<TodoList />);
