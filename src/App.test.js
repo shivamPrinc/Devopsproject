@@ -1,7 +1,8 @@
 // src/App.test.js
-import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom'; // Import for jest-dom matchers
 import App from './App';
+
 
 test('renders To-Do List header', () => {
   render(<App />);
