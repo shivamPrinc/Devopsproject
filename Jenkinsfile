@@ -6,6 +6,17 @@ pipeline {
     }
 
     stages {
+        stage('Install Chocolatey') {
+            steps {
+                // Install Chocolatey
+                script {
+                    bat """
+                    @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
+                    """
+                }
+            }
+        }
+
         stage('Checkout Code') {
             steps {
                 // Checkout the code from GitHub using the credential
