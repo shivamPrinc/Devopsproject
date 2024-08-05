@@ -6,17 +6,6 @@ pipeline {
     }
 
     stages {
-        stage('Install Chocolatey') {
-            steps {
-                // Install Chocolatey
-                script {
-                    bat """
-                    @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
-                    """
-                }
-            }
-        }
-
         stage('Checkout Code') {
             steps {
                 // Checkout the code from GitHub using the credential
@@ -31,11 +20,15 @@ pipeline {
 
         stage('Set Up Node.js') {
             steps {
-                // Install Node.js using Chocolatey
+                // Download and install NVM, then use it to install and set Node.js version
                 script {
-                    bat 'choco install nvm -y'
-                    bat 'nvm install %NODE_VERSION%'
-                    bat 'nvm use %NODE_VERSION%'
+                    bat '''
+                        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+                        set "NVM_DIR=%USERPROFILE%\\.nvm"
+                        set "PATH=%NVM_DIR%;%PATH%"
+                        nvm install %NODE_VERSION%
+                        nvm use %NODE_VERSION%
+                    '''
                 }
             }
         }
