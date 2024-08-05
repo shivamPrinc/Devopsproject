@@ -13,19 +13,20 @@ pipeline {
                     def githubCredentials = credentials('github-token')
                     checkout([$class: 'GitSCM', 
                               branches: [[name: '*/master']],
-                              userRemoteConfigs: [[url: 'https://github.com/shivamPrinc/Devopsproject.git']]])
+                              userRemoteConfigs: [[url: 'https://github.com/shivamPrinc/Devopsproject.git', credentialsId: 'github-token']]])
                 }
             }
         }
 
         stage('Set Up Node.js') {
             steps {
-                // Download and install NVM, then use it to install and set Node.js version
+                // Download and install NVM for Windows, then use it to install and set Node.js version
                 script {
                     bat '''
-                        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-                        set "NVM_DIR=%USERPROFILE%\\.nvm"
-                        set "PATH=%NVM_DIR%;%PATH%"
+                        powershell -Command "Invoke-WebRequest https://github.com/coreybutler/nvm-windows/releases/download/1.1.7/nvm-setup.exe -OutFile nvm-setup.exe"
+                        nvm-setup.exe /S
+                        setx NVM_HOME "C:\\Program Files\\nvm"
+                        setx PATH "%PATH%;C:\\Program Files\\nvm;C:\\Program Files\\nodejs"
                         nvm install %NODE_VERSION%
                         nvm use %NODE_VERSION%
                     '''
