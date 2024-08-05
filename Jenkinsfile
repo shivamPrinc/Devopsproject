@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_VERSION = '14' // Set the Node.js version
+        NODE_VERSION = '14.17.0' // Specify the exact Node.js version you want to install
     }
 
     stages {
@@ -20,15 +20,12 @@ pipeline {
 
         stage('Set Up Node.js') {
             steps {
-                // Download and install NVM for Windows, then use it to install and set Node.js version
+                // Download and install Node.js directly
                 script {
                     bat '''
-                        powershell -Command "Invoke-WebRequest https://github.com/coreybutler/nvm-windows/releases/download/1.1.7/nvm-setup.exe -OutFile nvm-setup.exe"
-                        nvm-setup.exe /S
-                        setx NVM_HOME "C:\\Program Files\\nvm"
-                        setx PATH "%PATH%;C:\\Program Files\\nvm;C:\\Program Files\\nodejs"
-                        nvm install %NODE_VERSION%
-                        nvm use %NODE_VERSION%
+                        powershell -Command "Invoke-WebRequest https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-x64.msi -OutFile nodejs.msi"
+                        msiexec /i nodejs.msi /quiet /qn /norestart
+                        setx PATH "%PATH%;C:\\Program Files\\nodejs"
                     '''
                 }
             }
