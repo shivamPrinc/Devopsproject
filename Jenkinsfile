@@ -13,7 +13,7 @@ pipeline {
                     def githubCredentials = credentials('github-token')
                     checkout([$class: 'GitSCM', 
                               branches: [[name: '*/master']],
-                              userRemoteConfigs: [[url: 'https://github.com/shivamPrinc/Devopsproject.git', credentialsId: 'github-token']]])
+                              userRemoteConfigs: [[url: 'https://github.com/shivamPrinc/Devopsproject.git']]])
                 }
             }
         }
