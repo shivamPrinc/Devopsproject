@@ -1,61 +1,39 @@
 pipeline {
     agent any
-
-    environment {
-        NODE_VERSION = '14.17.0' // Specify the exact Node.js version you want to install
-    }
-
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                // Checkout the code from GitHub using the credential
-                script {
-                    def githubCredentials = credentials('github-token')
-                    checkout([$class: 'GitSCM', 
-                              branches: [[name: '*/master']],
-                              userRemoteConfigs: [[url: 'https://github.com/shivamPrinc/Devopsproject.git', credentialsId: 'github-token']]])
-                }
+                git branch: 'master', url: 'https://github.com/your-repo/todo-app.git'
             }
         }
-
         stage('Set Up Node.js') {
             steps {
-                // Download and install Node.js directly
                 script {
-                    bat '''
-                        powershell -Command "Invoke-WebRequest https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-x64.msi -OutFile nodejs.msi"
-                        msiexec /i nodejs.msi /quiet /qn /norestart
-                        setx PATH "%PATH%;C:\\Program Files\\nodejs"
-                    '''
+                    def nodeVersion = '14.17.0' // Replace with the correct version
+                    bat "powershell -Command \"Invoke-WebRequest https://nodejs.org/dist/v${nodeVersion}/node-v${nodeVersion}-x64.msi -OutFile nodejs.msi\""
+                    bat 'msiexec /i nodejs.msi /quiet /qn /norestart'
+                    bat 'setx PATH "C:\\Program Files\\nodejs;"'
                 }
             }
         }
-
         stage('Install Dependencies') {
             steps {
-                // Install project dependencies
-                bat 'npm install'
+                bat 'npm install --legacy-peer-deps'
             }
         }
-
         stage('Install @testing-library/jest-dom') {
             steps {
-                // Install @testing-library/jest-dom
-                bat 'npm install @testing-library/jest-dom@latest'
+                bat 'npm install @testing-library/jest-dom --legacy-peer-deps'
             }
         }
-
         stage('Run Tests') {
             steps {
-                // Run tests
                 bat 'npm test'
             }
         }
     }
-
     post {
         always {
-            // Clean workspace after build
             cleanWs()
         }
     }
