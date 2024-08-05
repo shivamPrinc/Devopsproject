@@ -1,13 +1,11 @@
 pipeline {
-    agent {
-        label 'windows' // Use a Windows agent
+    agent any
+     environment {
+        NODE_VERSION = '14' // Set the Node.js version
     }
 
-    environment {
-        NODE_VERSION = '14' // Node.js version to use
-    }
 
-    stages {
+   stages {
         stage('Checkout Code') {
             steps {
                 // Checkout the code from GitHub
@@ -18,18 +16,11 @@ pipeline {
 
         stage('Set Up Node.js') {
             steps {
-                // Install Node.js and set the version
+                // Install Node.js
                 script {
                     bat 'nvm install %NODE_VERSION%'
                     bat 'nvm use %NODE_VERSION%'
                 }
-            }
-        }
-
-        stage('Install @testing-library/jest-dom') {
-            steps {
-                // Install @testing-library/jest-dom package
-                bat 'npm install @testing-library/jest-dom@latest'
             }
         }
 
@@ -40,17 +31,24 @@ pipeline {
             }
         }
 
+        stage('Install @testing-library/jest-dom') {
+            steps {
+                // Install @testing-library/jest-dom
+                bat 'npm install @testing-library/jest-dom@latest'
+            }
+        }
+
         stage('Run Tests') {
             steps {
                 // Run tests
                 bat 'npm test'
             }
         }
-    }
+
 
     post {
         always {
-            // Clean up workspace or perform other post-build actions if necessary
+            // Archive test results and build artifacts
             cleanWs()
         }
     }
